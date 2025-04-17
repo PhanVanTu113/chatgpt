@@ -33,6 +33,8 @@ Nhiệm vụ của bạn là hỗ trợ trả lời câu hỏi liên quan đến
 Trả lời chính xác, ngắn gọn, lịch sự. Nếu không chắc chắn, hãy xin phép người dùng cung cấp thêm thông tin hoặc từ chối trả lời.
 """}
     ]
+if "confirm_clear" not in st.session_state:
+    st.session_state.confirm_clear = False
 
 # ================== GIAO DIỆN HEADER ==================
 st.markdown("""
@@ -70,9 +72,21 @@ st.markdown("---")
 # ================== NÚT XÓA & TẢI LỊCH SỬ ==================
 col3, col4 = st.columns([1, 1])
 with col3:
-    if st.button("🧹 Xoá hội thoại"):
-        st.session_state.messages = st.session_state.messages[:1]
-        st.experimental_rerun()
+    if not st.session_state.confirm_clear:
+        if st.button("🧹 Xoá hội thoại"):
+            st.session_state.confirm_clear = True
+    else:
+        st.warning("Bạn có chắc chắn muốn xoá? Hành động này không thể hoàn tác.")
+        confirm = st.columns([1, 1])
+        with confirm[0]:
+            if st.button("✅ Xác nhận xoá"):
+                st.session_state.messages = st.session_state.messages[:1]
+                st.session_state.confirm_clear = False
+                st.rerun()
+        with confirm[1]:
+            if st.button("❌ Huỷ"):
+                st.session_state.confirm_clear = False
+
 with col4:
     if st.download_button(
         label="📥 Tải hội thoại (.txt)",
