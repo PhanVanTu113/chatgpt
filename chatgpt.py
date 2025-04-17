@@ -2,6 +2,7 @@
 import streamlit as st
 import os
 from openai import OpenAI
+from io import StringIO
 
 # ================== CẤU HÌNH CƠ BẢN ==================
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -49,6 +50,9 @@ st.markdown("""
             background-color: #F1F0F0;
             text-align: left;
         }
+        .input-box textarea {
+            background-color: #fff !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -63,6 +67,24 @@ with col2:
 
 st.markdown("---")
 
+# ================== NÚT XÓA & TẢI LỊCH SỬ ==================
+col3, col4 = st.columns([1, 1])
+with col3:
+    if st.button("🧹 Xoá hội thoại"):
+        st.session_state.messages = st.session_state.messages[:1]
+        st.experimental_rerun()
+with col4:
+    if st.download_button(
+        label="📥 Tải hội thoại (.txt)",
+        data="\n\n".join([
+            f"Người dùng: {m['content']}" if m['role'] == 'user' else f"Trợ lý: {m['content']}"
+            for m in st.session_state.messages[1:]
+        ]),
+        file_name="hoi_thoai_ecovis.txt",
+        mime="text/plain"
+    ):
+        pass
+
 # ================== HIỂN THỊ LỊCH SỬ CHAT ==================
 for msg in st.session_state.messages[1:]:
     if msg["role"] == "user":
@@ -71,7 +93,8 @@ for msg in st.session_state.messages[1:]:
         st.markdown(f"<div class='chat-bubble bot-msg'>{msg['content']}</div>", unsafe_allow_html=True)
 
 # ================== NHẬP CÂU HỎI ==================
-user_input = st.text_input("✏️ Nhập câu hỏi của bạn và nhấn Enter:", key="input")
+with st.container():
+    user_input = st.text_input("✏️ Nhập câu hỏi của bạn và nhấn Enter:", key="input")
 
 if user_input:
     with st.spinner("💬 Đang xử lý..."):
@@ -84,4 +107,3 @@ if user_input:
 
         bot_reply = response.choices[0].message.content
         st.session_state.messages.append({"role": "assistant", "content": bot_reply})
-        st.session_state.input = ""
