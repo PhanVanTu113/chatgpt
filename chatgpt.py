@@ -1,9 +1,10 @@
 # chatbot_web.py
 import streamlit as st
-import openai
+import os
+from openai import OpenAI
 
 # ================== CẤU HÌNH CƠ BẢN ==================
-openai.api_key = "sk-..."  # Thay bằng API key của bạn
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # ================== MÀU & LOGO ==================
 st.set_page_config(
@@ -41,12 +42,12 @@ if st.button("💬 Gửi câu hỏi"):
         st.warning("Vui lòng nhập nội dung câu hỏi.")
     else:
         with st.spinner("🔎 Đang xử lý câu trả lời từ Trợ lý Kiểm toán viên..."):
-            response = openai.ChatCompletion.create(
-                model="gpt-4",  # Hoặc "gpt-3.5-turbo" nếu muốn tiết kiệm chi phí
+            response = client.chat.completions.create(
+                model="gpt-4",
                 messages=[
                     {"role": "system", "content": "Bạn là Trợ lý Kiểm toán viên của công ty ECOVIS AFA VIETNAM, luôn tư vấn chính xác, thân thiện và ngắn gọn."},
                     {"role": "user", "content": user_input}
                 ]
             )
             st.success("✅ Phản hồi từ Trợ lý:")
-            st.write(response['choices'][0]['message']['content'])
+            st.write(response.choices[0].message.content)
