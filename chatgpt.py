@@ -35,6 +35,8 @@ Trả lời chính xác, ngắn gọn, lịch sự. Nếu không chắc chắn, 
     ]
 if "confirm_clear" not in st.session_state:
     st.session_state.confirm_clear = False
+if "input_text" not in st.session_state:
+    st.session_state.input_text = ""
 
 # ================== GIAO DIỆN HEADER ==================
 st.markdown("""
@@ -55,7 +57,13 @@ st.markdown("""
         .input-box textarea {
             background-color: #fff !important;
         }
+        .element-container:has(.bot-msg:last-child) {
+            scroll-margin-bottom: 50px;
+        }
     </style>
+    <script>
+        window.scrollTo(0, document.body.scrollHeight);
+    </script>
 """, unsafe_allow_html=True)
 
 col1, col2 = st.columns([1, 5])
@@ -106,11 +114,12 @@ for msg in st.session_state.messages[1:]:
     elif msg["role"] == "assistant":
         st.markdown(f"<div class='chat-bubble bot-msg'>{msg['content']}</div>", unsafe_allow_html=True)
 
-# ================== NHẬP CÂU HỎI ==================
-with st.container():
-    user_input = st.text_input("✏️ Nhập câu hỏi của bạn và nhấn Enter:", key="input")
+# ================== Ô NHẬP CÂU HỎI LUÔN HIỂN THỊ ==================
+st.markdown("---")
+user_input = st.text_input("✏️ Nhập câu hỏi của bạn và nhấn Enter:", value=st.session_state.input_text, key="input")
 
-if user_input:
+if user_input and user_input != st.session_state.input_text:
+    st.session_state.input_text = user_input
     with st.spinner("💬 Đang xử lý..."):
         st.session_state.messages.append({"role": "user", "content": user_input})
 
@@ -121,3 +130,5 @@ if user_input:
 
         bot_reply = response.choices[0].message.content
         st.session_state.messages.append({"role": "assistant", "content": bot_reply})
+        st.session_state.input_text = ""
+        st.rerun()
