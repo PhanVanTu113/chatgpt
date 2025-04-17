@@ -21,8 +21,6 @@ if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "system", "content": "Bạn là chuyên gia cao cấp về Kiểm toán, kế toán, thuế và Thẩm định giá của công ty ECOVIS AFA VIETNAM. Nhiệm vụ của bạn là hỗ trợ trả lời câu hỏi liên quan đến: - Kiểm toán tài chính, kiểm toán nội bộ, kiểm toán dự án đầu tư, Thẩm định giá - Kế toán doanh nghiệp - Thuế GTGT, TNDN, TNCN - Hóa đơn điện tử, quy định đầu tư công Trả lời chính xác, ngắn gọn, lịch sự. Nếu không chắc chắn, hãy xin phép người dùng cung cấp thêm thông tin hoặc từ chối trả lời."}
     ]
-if "input_text" not in st.session_state:
-    st.session_state.input_text = ""
 
 st.markdown("""
 <style>
@@ -73,11 +71,10 @@ for msg in st.session_state.messages[1:]:
 st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("<div class='input-container'>", unsafe_allow_html=True)
-user_input = st.text_input("Nhập câu hỏi và nhấn Enter:", value=st.session_state.input_text, key="input")
+user_input = st.text_input("Nhập câu hỏi và nhấn Enter:", key="input")
 st.markdown("</div>", unsafe_allow_html=True)
 
-if user_input and user_input != st.session_state.input_text:
-    st.session_state.input_text = user_input
+if user_input:
     with st.spinner("💬 Đang xử lý..."):
         st.session_state.messages.append({"role": "user", "content": user_input})
 
@@ -91,10 +88,9 @@ if user_input and user_input != st.session_state.input_text:
 
         bot_reply = response.choices[0].message.content
         st.session_state.messages.append({"role": "assistant", "content": bot_reply})
-        st.session_state.input_text = ""
+        st.session_state.input = ""
         st.rerun()
 
 if st.button("🧹 Xoá hội thoại"):
     st.session_state.messages = st.session_state.messages[:1]
-    st.session_state.input_text = ""
     st.rerun()
