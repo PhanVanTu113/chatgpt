@@ -78,9 +78,7 @@ for msg in st.session_state.messages[1:]:
     st.markdown(f"<div class='message {role}'>{content}</div>", unsafe_allow_html=True)
 st.markdown("</div>", unsafe_allow_html=True)
 
-st.markdown("<div class='input-container'>", unsafe_allow_html=True)
 user_input = st.text_input("Nhập câu hỏi và nhấn Enter:", key="input")
-st.markdown("</div>", unsafe_allow_html=True)
 
 if user_input:
     with st.spinner("💬 Đang xử lý..."):
