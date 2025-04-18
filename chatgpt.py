@@ -106,9 +106,4 @@ if user_input:
             del st.session_state["input"]
         st.rerun()
 
-if st.button("🧹 Xoá hội thoại"):
-    if "input" in st.session_state and st.session_state.input:
-        del st.session_state["input"]
-    else:
-        st.session_state.messages = st.session_state.messages[:1]
-        st.rerun()
+
