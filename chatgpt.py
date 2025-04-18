@@ -68,52 +68,8 @@ with col2:
 
 st.markdown("---")
 
-# TẢI FILE TÀI LIỆU (PDF/Word)
-uploaded_file = st.file_uploader("📎 Tải lên tài liệu PDF hoặc Word (tối đa ~3 trang):", type=["pdf", "docx"])
-file_text = ""
-file_summary = ""
-if uploaded_file:
-    from PyPDF2 import PdfReader
-    from docx import Document
 
-    file_ext = uploaded_file.name.split(".")[-1].lower()
-    if file_ext == "pdf":
-        pdf = PdfReader(uploaded_file)
-        for page in pdf.pages[:3]:
-            text = page.extract_text()
-            if text:
-                file_text += text + "
-"
-    elif file_ext == "docx":
-        doc = Document(uploaded_file)
-        for para in doc.paragraphs[:60]:
-            if para.text:
-                file_text += para.text + "
-"
 
-    file_text = file_text.strip()
-
-    # TÓM TẮT BẰNG GPT-3.5
-    if file_text:
-        with st.spinner("🔄 Đang tóm tắt tài liệu bằng GPT-3.5..."):
-            summary_response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": "Bạn là một trợ lý chuyên tóm tắt văn bản dài."},
-                    {"role": "user", "content": f"Hãy tóm tắt ngắn gọn, đầy đủ nội dung sau:
-
-{file_text}"}
-                ],
-                max_tokens=512,
-                temperature=0.3
-            )
-            file_summary = summary_response.choices[0].message.content.strip()
-
-    if file_summary:
-        st.success("✅ Đã tóm tắt nội dung tài liệu. Bạn có thể đặt câu hỏi liên quan đến bản tóm tắt.")
-        with st.expander("📄 Xem bản tóm tắt"):
-            st.markdown(file_summary)
-        st.success("✅ Đã tải lên tài liệu. Bạn có thể đặt câu hỏi liên quan đến nội dung tài liệu.")
 
 st.markdown("<div class='chat-box'>", unsafe_allow_html=True)
 for msg in st.session_state.messages[1:]:
@@ -124,8 +80,6 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 st.markdown("<div class='input-container'>", unsafe_allow_html=True)
 user_input = st.text_input("Nhập câu hỏi và nhấn Enter:", key="input")
-if file_summary:
-    user_input = f"Dựa vào nội dung tóm tắt sau, hãy trả lời câu hỏi: {user_input}" if user_input else user_input
 st.markdown("</div>", unsafe_allow_html=True)
 
 if user_input:
@@ -142,10 +96,8 @@ if user_input:
             model=model_to_use,
             messages=[
                 st.session_state.messages[0],
-                {"role": "user", "content": file_summary} if file_summary else None,
-                {"role": "user", "content": file_text} if file_text else None,
                 {"role": "user", "content": user_input}
-            ] if file_text else [
+            ]
                 st.session_state.messages[0],
                 {"role": "user", "content": user_input}
             ],
