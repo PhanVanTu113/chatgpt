@@ -4,7 +4,12 @@ import os
 from openai import OpenAI
 from io import StringIO
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai_api_key = os.getenv("OPENAI_API_KEY")
+if not openai_api_key:
+    st.error("🚫 Hệ thống chưa cấu hình API Key. Vui lòng liên hệ quản trị viên để thiết lập biến môi trường OPENAI_API_KEY.")
+    st.stop()
+
+client = OpenAI(api_key=openai_api_key)
 
 st.set_page_config(
     page_title="Trợ lý Kiểm toán viên | ECOVIS AFA VIETNAM",
