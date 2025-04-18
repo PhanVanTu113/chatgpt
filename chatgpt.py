@@ -78,17 +78,17 @@ if uploaded_file:
 
     file_ext = uploaded_file.name.split(".")[-1].lower()
     if file_ext == "pdf":
-    pdf = PdfReader(uploaded_file)
-    for page in pdf.pages[:3]:
-        text = page.extract_text()
-        if text:
-            file_text += text + "\n"
+        pdf = PdfReader(uploaded_file)
+        for page in pdf.pages[:3]:
+            text = page.extract_text()
+            if text:
+                file_text += text + "
 "
-elif file_ext == "docx":
-    doc = Document(uploaded_file)
-    for para in doc.paragraphs[:60]:
-        if para.text:
-            file_text += para.text + "\n"
+    elif file_ext == "docx":
+        doc = Document(uploaded_file)
+        for para in doc.paragraphs[:60]:
+            if para.text:
+                file_text += para.text + "
 "
 
     file_text = file_text.strip()
