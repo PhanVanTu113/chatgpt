@@ -98,7 +98,7 @@ if user_input:
         model_info = f"<br><sub><i>🤖 Mô hình sử dụng: {model_to_use}</i></sub>"
         bot_reply += model_info
         st.session_state.messages.append({"role": "assistant", "content": bot_reply})
-        st.session_state.input = ""
+        # Không cần reset st.session_state.input vì đã rerun
         st.rerun()
 
 if st.button("🧹 Xoá hội thoại"):
