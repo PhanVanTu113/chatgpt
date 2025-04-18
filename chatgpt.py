@@ -78,15 +78,27 @@ if user_input:
     with st.spinner("💬 Đang xử lý..."):
         st.session_state.messages.append({"role": "user", "content": user_input})
 
+                # Tự động chuyển model nếu câu đơn giản
+        simple_keywords = ["là gì", "là ai", "định nghĩa", "viết tắt", "mẫu", "ví dụ"]
+        is_simple = any(kw in user_input.lower() for kw in simple_keywords) and len(user_input) < 80
+
+        model_to_use = "gpt-3.5-turbo" if is_simple else "gpt-4o"
+
         response = client.chat.completions.create(
-            model="gpt-4",
+            model=model_to_use,
             messages=[
                 st.session_state.messages[0],
                 {"role": "user", "content": user_input}
-            ]
+            ],
+            max_tokens=512,
+            temperature=0.7
         )
 
         bot_reply = response.choices[0].message.content
+        model_info = f"
+
+<sub><i>🤖 Model: {model_to_use}</i></sub>"
+        bot_reply += model_info
         st.session_state.messages.append({"role": "assistant", "content": bot_reply})
         st.session_state.input = ""
         st.rerun()
