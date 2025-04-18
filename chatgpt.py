@@ -36,6 +36,7 @@ st.markdown("""
     border: 1px solid #ddd;
     border-radius: 10px;
     background-color: #f8f9fa;
+    margin-bottom: 1rem;
 }
 .message.user {
     background-color: #DCF8C6;
@@ -50,9 +51,6 @@ st.markdown("""
     border-radius: 10px;
     margin-bottom: 10px;
     text-align: left;
-}
-.input-container {
-    padding-top: 1rem;
 }
 </style>
 <script>
