@@ -97,9 +97,6 @@ if user_input:
             messages=[
                 st.session_state.messages[0],
                 {"role": "user", "content": user_input}
-            ]
-                st.session_state.messages[0],
-                {"role": "user", "content": user_input}
             ],
             max_tokens=512,
             temperature=0.7
