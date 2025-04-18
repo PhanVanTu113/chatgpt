@@ -69,12 +69,11 @@ st.markdown("---")
 
 
 
-st.markdown("<div class='chat-box'>", unsafe_allow_html=True)
 for msg in st.session_state.messages[1:]:
     role = msg["role"]
     content = msg["content"]
-    st.markdown(f"<div class='message {role}'>{content}</div>", unsafe_allow_html=True)
-st.markdown("</div>", unsafe_allow_html=True)
+    css_class = "message user" if role == "user" else "message assistant"
+    st.markdown(f"<div class='{css_class}'>{content}</div>", unsafe_allow_html=True)
 
 user_input = st.text_input("Nhập câu hỏi và nhấn Enter:", key="input")
 
