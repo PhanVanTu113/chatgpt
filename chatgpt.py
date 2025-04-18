@@ -95,9 +95,7 @@ if user_input:
         )
 
         bot_reply = response.choices[0].message.content
-        model_info = f"
-
-<sub><i>🤖 Model: {model_to_use}</i></sub>"
+        model_info = f"<br><sub><i>🤖 Mô hình sử dụng: {model_to_use}</i></sub>"
         bot_reply += model_info
         st.session_state.messages.append({"role": "assistant", "content": bot_reply})
         st.session_state.input = ""
